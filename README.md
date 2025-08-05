@@ -28,7 +28,9 @@ Un sistema de gestión de contenido (CMS) completamente funcional construido con
 - **Optimización de imágenes** con Next.js Image
 - **TypeScript** para mejor desarrollo
 
-### Base de Datos (MySQL + Sequelize)
+### Base de Datos (SQLite + PostgreSQL + Sequelize)
+- **SQLite** para desarrollo (configuración simple)
+- **PostgreSQL** para producción (escalable y robusto)
 - **Modelos relacionales** completos
 - **Migraciones** automáticas
 - **Validaciones** a nivel de base de datos
@@ -38,8 +40,9 @@ Un sistema de gestión de contenido (CMS) completamente funcional construido con
 ## 📋 Requisitos Previos
 
 - Node.js 18+ y npm
-- MySQL 8.0+
 - Git
+- **Desarrollo**: No se requiere instalación adicional (SQLite incluido)
+- **Producción**: PostgreSQL instalado en el servidor
 
 ## 🛠️ Instalación
 
@@ -62,37 +65,55 @@ cd ../frontend && npm install
 
 ### 3. Configurar la base de datos
 
-Crear una base de datos MySQL:
+#### Para Desarrollo (SQLite):
+No se requiere configuración adicional. El archivo `database.sqlite` se creará automáticamente.
+
+#### Para Producción (PostgreSQL):
 ```sql
-CREATE DATABASE cms_database;
+CREATE DATABASE tu_base_datos;
+CREATE USER tu_usuario WITH PASSWORD 'tu_password';
+GRANT ALL PRIVILEGES ON DATABASE tu_base_datos TO tu_usuario;
 ```
 
 ### 4. Configurar variables de entorno
 
 **Backend** (`backend/.env`):
-```env
-# Servidor
-PORT=3001
-NODE_ENV=development
 
-# Base de datos
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=cms_database
-DB_USER=root
-DB_PASSWORD=your_password
+Para Desarrollo:
+```env
+# Configuración de la aplicación
+NODE_ENV=development
+PORT=3000
 
 # JWT
-JWT_SECRET=your_super_secret_jwt_key_here
-JWT_EXPIRE=7d
+JWT_SECRET=tu_jwt_secret_muy_seguro
+JWT_EXPIRES_IN=24h
 
-# Uploads
+# Configuración de archivos
 UPLOAD_PATH=./uploads
-MAX_FILE_SIZE=10485760
+MAX_FILE_SIZE=5242880
+```
 
-# URLs
-FRONTEND_URL=http://localhost:3000
-BACKEND_URL=http://localhost:3001
+Para Producción:
+```env
+# Configuración de la aplicación
+NODE_ENV=production
+PORT=3000
+
+# Base de datos PostgreSQL
+DB_USER=tu_usuario_postgres
+DB_PASSWORD=tu_password_postgres
+DB_NAME=tu_base_datos
+DB_HOST=tu_host_postgres
+DB_PORT=5432
+
+# JWT
+JWT_SECRET=tu_jwt_secret_muy_seguro
+JWT_EXPIRES_IN=24h
+
+# Configuración de archivos
+UPLOAD_PATH=./uploads
+MAX_FILE_SIZE=5242880
 ```
 
 **Frontend** (`frontend/.env.local`):
@@ -102,9 +123,18 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 ### 5. Ejecutar migraciones
+
 ```bash
+# Para desarrollo (SQLite)
 cd backend
 npm run migrate
+
+# Para producción (PostgreSQL)
+cd backend
+NODE_ENV=production npm run migrate
+
+# Verificar estado de migraciones
+npm run db:status
 ```
 
 ### 6. Iniciar el desarrollo
