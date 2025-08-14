@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
       references: {
         model: 'users',
         key: 'id'
-      }
+      },
+      field: 'user_id'
     },
     postId: {
       type: DataTypes.INTEGER,
@@ -21,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
       references: {
         model: 'posts',
         key: 'id'
-      }
+      },
+      field: 'post_id'
     },
     commentId: {
       type: DataTypes.INTEGER,
@@ -29,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
       references: {
         model: 'comments',
         key: 'id'
-      }
+      },
+      field: 'comment_id'
     },
     type: {
       type: DataTypes.ENUM('like', 'dislike', 'love', 'laugh', 'angry', 'sad'),
@@ -42,21 +45,11 @@ module.exports = (sequelize, DataTypes) => {
     indexes: [
       {
         unique: true,
-        fields: ['userId', 'postId'],
-        where: {
-          postId: {
-            [sequelize.Sequelize.Op.ne]: null
-          }
-        }
+        fields: [{ name: 'user_id' }, { name: 'post_id' }]
       },
       {
         unique: true,
-        fields: ['userId', 'commentId'],
-        where: {
-          commentId: {
-            [sequelize.Sequelize.Op.ne]: null
-          }
-        }
+        fields: [{ name: 'user_id' }, { name: 'comment_id' }]
       }
     ],
     validate: {
