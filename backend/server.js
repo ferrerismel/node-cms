@@ -29,7 +29,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:"],
     },
   },
@@ -96,6 +96,10 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/settings', settingRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+
+// Documentación Swagger
+const { setupSwagger } = require('./swagger');
+setupSwagger(app);
 
 // Ruta por defecto
 app.get('/', (req, res) => {
@@ -231,7 +235,7 @@ async function startServer() {
   app.listen(PORT, () => {
     console.log(`🚀 Servidor ejecutándose en puerto ${PORT}`);
     console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`📝 API Documentation: http://localhost:${PORT}/`);
+    console.log(`📝 API Documentation: http://localhost:${PORT}/api/docs`);
     console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
   });
 }
